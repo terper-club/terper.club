@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terper Club</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.4;
+            color: #000;
+            background: #fff;
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: #fff;
+            z-index: 1000;
+            padding: 20px 30px;
+            border-bottom: 1px solid #000;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 18px;
+            font-weight: normal;
+            color: #000;
+            text-decoration: none;
+            letter-spacing: 1px;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 40px;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #000;
+            font-size: 14px;
+            font-weight: normal;
+            transition: opacity 0.2s ease;
+        }
+
+        .nav-menu a:hover {
+            opacity: 0.5;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 30px;
+        }
+
+        .hero-content h1 {
+            font-size: clamp(40px, 8vw, 120px);
+            font-weight: 300;
+            letter-spacing: -2px;
+            margin-bottom: 40px;
+        }
+
+        .hero-content p {
+            font-size: 18px;
+            font-weight: 300;
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0.7;
+        }
+
+        /* About Section */
+        .about {
+            padding: 100px 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .about h2 {
+            font-size: 24px;
+            font-weight: 300;
+            margin-bottom: 60px;
+            text-align: center;
+        }
+
+        .about-text {
+            font-size: 16px;
+            line-height: 1.6;
+            font-weight: 300;
+            columns: 2;
+            column-gap: 60px;
+            text-align: justify;
+        }
+
+        .about-text p {
+            margin-bottom: 20px;
+            break-inside: avoid;
+        }
+
+        /* Work Section */
+        .work {
+            padding: 100px 30px;
+            border-top: 1px solid #000;
+        }
+
+        .work-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .work h2 {
+            font-size: 24px;
+            font-weight: 300;
+            margin-bottom: 60px;
+            text-align: center;
+        }
+
+        .work-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1px;
+            background: #000;
+        }
+
+        .work-item {
+            background: #fff;
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 40px;
+            transition: background 0.3s ease;
+            cursor: pointer;
+        }
+
+        .work-item:hover {
+            background: #f5f5f5;
+        }
+
+        .work-item h3 {
+            font-size: 18px;
+            font-weight: 300;
+        }
+
+        /* Contact Section */
+        .contact {
+            padding: 100px 30px;
+            text-align: center;
+            border-top: 1px solid #000;
+        }
+
+        .contact h2 {
+            font-size: 24px;
+            font-weight: 300;
+            margin-bottom: 40px;
+        }
+
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .contact-links a {
+            color: #000;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 300;
+            transition: opacity 0.2s ease;
+        }
+
+        .contact-links a:hover {
+            opacity: 0.5;
+        }
+
+        /* Footer */
+        .footer {
+            border-top: 1px solid #000;
+            padding: 30px;
+            text-align: center;
+            font-size: 12px;
+            opacity: 0.5;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+
+            .hero, .about, .work, .contact {
+                padding: 60px 20px;
+            }
+
+            .about-text {
+                columns: 1;
+            }
+
+            .contact-links {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .work-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Selection */
+        ::selection {
+            background: #000;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav-container">
+            <a href="#" class="logo">TERPER.CLUB</a>
+            <ul class="nav-menu">
+                <li><a href="#about">ABOUT</a></li>
+                <li><a href="#work">WORK</a></li>
+                <li><a href="#contact">CONTACT</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>TERPER CLUB</h1>
+            <p>Digital experiences and creative solutions</p>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <h2>About</h2>
+        <div class="about-text">
+            <p>Terper Clubbbbbbbbbbbb.</p>
+            
+            <p>Weeeee</p>
+            
+            <p>Digital art and interactive experiences.</p>
+            
+            <p>Salads.</p>
+        </div>
+    </section>
+
+    <!-- Work Section -->
+    <section id="work" class="work">
+        <div class="work-container">
+            <h2>Selected Work</h2>
+            <div class="work-grid">
+                <div class="work-item">
+                    <h3>Web Design</h3>
+                </div>
+                <div class="work-item">
+                    <h3>Digital Art</h3>
+                </div>
+                <div class="work-item">
+                    <h3>Interactive Media</h3>
+                </div>
+                <div class="work-item">
+                    <h3>Brand Identity</h3>
+                </div>
+                <div class="work-item">
+                    <h3>Installation</h3>
+                </div>
+                <div class="work-item">
+                    <h3>Print Design</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <h2>Contact</h2>
+        <div class="contact-links">
+            <a href="#">Instagram</a>
+            <a href="#">Email</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2025 Terper Club</p>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
