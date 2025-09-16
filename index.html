@@ -102,18 +102,32 @@
             text-align: center;
         }
 
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: flex-start;
+        }
+
         .about-text {
             font-size: 16px;
             line-height: 1.6;
             font-weight: 300;
-            columns: 2;
-            column-gap: 60px;
             text-align: justify;
         }
 
         .about-text p {
             margin-bottom: 20px;
-            break-inside: avoid;
+        }
+
+        .about-image {
+            width: 100%;
+        }
+
+        .about-image img {
+            width: 100%;
+            height: auto;
+            display: block;
         }
 
         /* Work Section */
@@ -194,6 +208,12 @@
             opacity: 0.5;
         }
 
+        .contact-links span {
+            color: #000;
+            font-size: 16px;
+            font-weight: 300;
+        }
+
         /* Footer */
         .footer {
             border-top: 1px solid #000;
@@ -217,8 +237,13 @@
                 padding: 60px 20px;
             }
 
+            .about-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
             .about-text {
-                columns: 1;
+                text-align: left;
             }
 
             .contact-links {
@@ -260,21 +285,26 @@
     <section id="home" class="hero">
         <div class="hero-content">
             <h1>TERPER CLUB</h1>
-            <p>Digital experiences and creative solutions</p>
+            <p>Spoken poetry & broken beats</p>
         </div>
     </section>
 
     <!-- About Section -->
     <section id="about" class="about">
         <h2>About</h2>
-        <div class="about-text">
-            <p>Terper Clubbbbbbbbbbbb.</p>
-            
-            <p>Weeeee</p>
-            
-            <p>Digital art and interactive experiences.</p>
-            
-            <p>Salads.</p>
+        <div class="about-content">
+            <div class="about-text">
+                <p>Sound that weaves through textile. Words that build installations. Music that touches more than ears.</p>
+                
+                <p>We create multidisciplinary art installations combining audiovisual work, textile crafting, and music production. Each piece explores the intersection of spoken word, experimental beats, and tactile creation.</p>
+                
+                <p>Our work lives in galleries, performance spaces, and anywhere the boundaries between mediums dissolve.</p>
+                
+                <p>Based in Barcelona, creating between poetry and percussion.</p>
+            </div>
+            <div class="about-image">
+                <img src="./media/terper-montage-redBlue-1.jpg" alt="Terper Club work" />
+            </div>
         </div>
     </section>
 
@@ -284,22 +314,22 @@
             <h2>Selected Work</h2>
             <div class="work-grid">
                 <div class="work-item">
-                    <h3>Web Design</h3>
+                    <h3>Installations</h3>
                 </div>
                 <div class="work-item">
-                    <h3>Digital Art</h3>
+                    <h3>Audiovisual</h3>
                 </div>
                 <div class="work-item">
-                    <h3>Interactive Media</h3>
+                    <h3>Music</h3>
                 </div>
                 <div class="work-item">
-                    <h3>Brand Identity</h3>
+                    <h3>Textile</h3>
                 </div>
                 <div class="work-item">
-                    <h3>Installation</h3>
+                    <h3>Performance</h3>
                 </div>
                 <div class="work-item">
-                    <h3>Print Design</h3>
+                    <h3>Poetry</h3>
                 </div>
             </div>
         </div>
@@ -309,8 +339,8 @@
     <section id="contact" class="contact">
         <h2>Contact</h2>
         <div class="contact-links">
-            <a href="#">Instagram</a>
-            <a href="#">Email</a>
+            <a href="https://www.instagram.com/terper.club" target="_blank">@terper.club</a>
+            <span>terper (dot) club (@) gmail (dot) com</span>
         </div>
     </section>
 
