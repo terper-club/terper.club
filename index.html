@@ -171,9 +171,43 @@
             background: #f5f5f5;
         }
 
+        .work-item.active {
+            background: #000;
+            color: #fff;
+        }
+
         .work-item h3 {
             font-size: 18px;
             font-weight: 300;
+        }
+
+        /* Gallery Section */
+        .gallery {
+            margin-top: 60px;
+            min-height: 400px;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .gallery-item {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+
+        .gallery-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            display: block;
         }
 
         /* Contact Section */
@@ -294,12 +328,12 @@
         <h2>About</h2>
         <div class="about-content">
             <div class="about-text">
-                <p>Sound that weaves through textile. Words that build installations. Music that touches more than ears.</p>
-                
+                <p>Sound that weaves.</p>
+
                 <p>We create multidisciplinary art installations combining audiovisual work, textile crafting, and music production. Each piece explores the intersection of spoken word, experimental beats, and tactile creation.</p>
-                
+
                 <p>Our work lives in galleries, performance spaces, and anywhere the boundaries between mediums dissolve.</p>
-                
+
                 <p>Based in Barcelona, creating between poetry and percussion.</p>
             </div>
             <div class="about-image">
@@ -313,23 +347,29 @@
         <div class="work-container">
             <h2>Selected Work</h2>
             <div class="work-grid">
-                <div class="work-item">
+                <div class="work-item" data-category="installations">
                     <h3>Installations</h3>
                 </div>
-                <div class="work-item">
+                <div class="work-item" data-category="audiovisual">
                     <h3>Audiovisual</h3>
                 </div>
-                <div class="work-item">
+                <div class="work-item" data-category="music">
                     <h3>Music</h3>
                 </div>
-                <div class="work-item">
+                <div class="work-item" data-category="textile">
                     <h3>Textile</h3>
                 </div>
-                <div class="work-item">
+                <div class="work-item" data-category="performance">
                     <h3>Performance</h3>
                 </div>
-                <div class="work-item">
+                <div class="work-item" data-category="poetry">
                     <h3>Poetry</h3>
+                </div>
+            </div>
+            
+            <div class="gallery">
+                <div class="gallery-grid" id="gallery-grid">
+                    <!-- Images will be loaded here via JavaScript -->
                 </div>
             </div>
         </div>
@@ -350,6 +390,69 @@
     </footer>
 
     <script>
+        // Gallery data - organize your images by category
+        const galleryData = {
+            installations: [
+                'LoveSupreme_Installation_1.jpg'
+            ],
+            audiovisual: [
+                'terper-montage-redBlue-1.jpg',
+                'terper_duo_1.jpg'
+            ],
+            music: [
+                'terper_and_chimbi.jpg'
+            ],
+            textile: [
+                'paola_girafa_ish.jpg',
+                'paola_mist_cl.jpg'
+            ],
+            performance: [
+                'terper_balcon_1.jpg',
+                'terper_balcon_2.jpg'
+            ],
+            poetry: [
+                'halloween_lol.jpg'
+            ]
+        };
+
+        // Gallery functionality
+        const workItems = document.querySelectorAll('.work-item');
+        const galleryGrid = document.getElementById('gallery-grid');
+
+        function showGallery(category) {
+            // Remove active state from all items
+            workItems.forEach(item => item.classList.remove('active'));
+            
+            // Add active state to clicked item
+            document.querySelector(`[data-category="${category}"]`).classList.add('active');
+            
+            // Clear gallery
+            galleryGrid.innerHTML = '';
+            
+            // Add images for selected category
+            const images = galleryData[category] || [];
+            images.forEach((image, index) => {
+                const galleryItem = document.createElement('div');
+                galleryItem.className = 'gallery-item';
+                galleryItem.innerHTML = `<img src="./media/${image}" alt="${category}" />`;
+                
+                // Add with delay for staggered animation
+                setTimeout(() => {
+                    galleryItem.classList.add('visible');
+                }, index * 100);
+                
+                galleryGrid.appendChild(galleryItem);
+            });
+        }
+
+        // Add click handlers to work items
+        workItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const category = item.dataset.category;
+                showGallery(category);
+            });
+        });
+
         // Smooth scrolling for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
