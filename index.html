@@ -67,21 +67,39 @@
 
         /* Grid */
         #boxes {
-            position: relative;
-            margin-bottom: 60px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
         }
 
         .box {
-            width: 416px;
-            margin-bottom: 16px;
             position: relative;
             overflow: hidden;
+        }
+
+        .box a {
+            display: block;
+            text-decoration: none;
+            color: #000;
         }
 
         .box img {
             display: block;
             width: 100%;
             height: auto;
+            transition: opacity 0.2s ease;
+        }
+
+        .box a:hover img {
+            opacity: 0.8;
+        }
+
+        .box-caption {
+            padding: 10px 0;
+            font-size: 14px;
+            font-weight: 300;
+            line-height: 1.4;
         }
 
         /* About Section */
@@ -90,6 +108,13 @@
             padding: 40px 0;
             border-top: 1px solid #000;
             border-bottom: 1px solid #000;
+        }
+
+        .about-section h3 {
+            font-size: 24px;
+            font-weight: 300;
+            margin-bottom: 40px;
+            text-align: center;
         }
 
         .about-content {
@@ -117,7 +142,7 @@
 
         /* Contact Section */
         .contact-section {
-            padding: 60px 0;
+            padding: 20px 0 60px;
             text-align: center;
         }
 
@@ -158,8 +183,8 @@
 
         /* Mobile */
         @media (max-width: 1000px) {
-            .box {
-                width: 260px;
+            #boxes {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             }
         }
 
@@ -177,6 +202,10 @@
                 gap: 20px;
             }
 
+            #boxes {
+                grid-template-columns: 1fr;
+            }
+
             .about-content {
                 grid-template-columns: 1fr;
                 gap: 30px;
@@ -185,10 +214,6 @@
             .contact-links {
                 flex-direction: column;
                 gap: 20px;
-            }
-
-            .box {
-                width: 100%;
             }
         }
 
@@ -206,7 +231,7 @@
 
 <div class="wrapper">
     <div class="menuHead">
-        <h2><a href="#">TERPER.CLUB</a></h2>
+        <h2><a href="#">TERPER</a></h2>
         <div class="clear"></div>
         <div class="menu">
             <ul>
@@ -219,49 +244,67 @@
 
     <div id="boxes">
         <div class="box">
-            <img src="./media/LoveSupreme_Installation_1.jpg" alt="Terper Club work" />
+            <a href="./displacement-2">
+                <img src="./media/LoveSupreme_Installation_1.jpg" alt="Installation work" />
+                <div class="box-caption">A Love Supreme, Konvent Zero</div>
+            </a>
         </div>
 
         <div class="box">
-            <img src="./media/terper-montage-redBlue-1.jpg" alt="Terper Club work" />
+            <a href="./xo-sphere">
+                <img src="./media/terper-montage-redBlue-1.jpg" alt="Audiovisual performance" />
+                <div class="box-caption">XO Sphere</div>
+            </a>
         </div>
 
         <div class="box">
-            <img src="./media/terper_duo_1.jpg" alt="Terper Club work" />
+            <a href="./displacement-1">
+                <img src="./media/terper_duo_1.jpg" alt="Live collaboration" />
+                <div class="box-caption">Zilzal II, Calafou</div>
+            </a>
         </div>
 
         <div class="box">
-            <img src="./media/terper_and_chimbi.jpg" alt="Terper Club work" />
+            <a href="./amygdala-1">
+                <img src="./media/terper_and_chimbi.jpg" alt="Music production" />
+                <div class="box-caption">Amygdala, Centre Civico de Barceloneta</div>
+            </a>
         </div>
 
         <div class="box">
-            <img src="./media/paola_girafa_ish.jpg" alt="Terper Club work" />
+            <a href="./velvet-seafloor">
+                <img src="./media/paola_girafa_ish.jpg" alt="Textile work" />
+                <div class="box-caption">Velvet Seafloor.</div>
+            </a>
         </div>
 
         <div class="box">
-            <img src="./media/paola_mist_cl.jpg" alt="Terper Club work" />
+            <a href="./tortuga-1">
+                <img src="./media/paola_mist_cl.jpg" alt="Textile installation" />
+                <div class="box-caption">El Jardí de les Tortugues</div>
+            </a>
         </div>
 
         <div class="box">
-            <img src="./media/terper_balcon_1.jpg" alt="Terper Club work" />
-        </div>
-
-        <div class="box">
-            <img src="./media/terper_balcon_2.jpg" alt="Terper Club work" />
-        </div>
-
-        <div class="box">
-            <img src="./media/halloween_lol.jpg" alt="Terper Club work" />
+            <a href="./breathing-waves-2">
+                <img src="./media/terper_balcon_1.jpg" alt="Performance art" />
+                <div class="box-caption">breathing waves (centre d'artesania)</div>
+            </a>
         </div>
     </div>
 
     <div class="about-section" id="about">
+        <h3>About</h3>
         <div class="about-content">
             <div class="about-text">
                 <p>Sound that weaves.</p>
                 <p>We create multidisciplinary art installations combining audiovisual work, textile crafting, and music production. Each piece explores the intersection of spoken word, experimental beats, and tactile creation.</p>
                 <p>Our work lives in galleries, performance spaces, and anywhere the boundaries between mediums dissolve.</p>
                 <p>Based in Barcelona, creating between poetry and percussion.</p>
+                <p style="margin-top: 30px;">
+                    <a href="https://www.instagram.com/terper.club" target="_blank" style="color: #000; text-decoration: underline; margin-right: 20px;">Instagram</a>
+                    <a href="https://www.youtube.com/@TERPERCLUB" target="_blank" style="color: #000; text-decoration: underline;">YouTube</a>
+                </p>
             </div>
             <div class="about-image">
                 <img src="./media/terper-montage-redBlue-1.jpg" alt="Terper Club work" />
@@ -283,31 +326,9 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/4.2.2/masonry.pkgd.min.js"></script>
 
 <script>
 $(document).ready(function() {
-    function colWidth() {
-        return $(window).width() > 1000 ? 416 : 260;
-    }
-    
-    function gutterWidth() {
-        return $(window).width() > 1000 ? 16 : 10;
-    }
-    
-    function reMasonry() {
-        $('#boxes').masonry('destroy');
-        $('#boxes').masonry({
-            itemSelector: '.box',
-            columnWidth: colWidth(),
-            gutterWidth: gutterWidth()
-        });
-    }
-    
-    reMasonry();
-    $(window).load(reMasonry);
-    $(window).bind("resize", reMasonry);
-
     // Smooth scrolling
     $('a[href^="#"]').on('click', function(e) {
         e.preventDefault();
