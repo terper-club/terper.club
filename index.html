@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terper Club</title>
+    <title>TERPER.CLUB | Spoken poetry & broken beats</title>
     <style>
         * {
             margin: 0;
@@ -18,40 +18,38 @@
             background: #fff;
         }
 
-        /* Header */
-        .header {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: #fff;
-            z-index: 1000;
-            padding: 20px 30px;
-            border-bottom: 1px solid #000;
-        }
-
-        .nav-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1400px;
+        .wrapper {
+            width: 90%;
+            max-width: 1280px;
             margin: 0 auto;
         }
 
-        .logo {
+        /* Header */
+        .menuHead {
+            padding: 30px 0 20px;
+            border-bottom: 1px solid #000;
+            margin-bottom: 40px;
+        }
+
+        .menuHead h2 {
             font-size: 18px;
             font-weight: normal;
-            color: #000;
-            text-decoration: none;
+            margin-bottom: 15px;
             letter-spacing: 1px;
         }
 
-        .nav-menu {
-            display: flex;
+        .menuHead h2 a {
+            text-decoration: none;
+            color: #000;
+        }
+
+        .menu ul {
             list-style: none;
+            display: flex;
             gap: 40px;
         }
 
-        .nav-menu a {
+        .menu ul li a {
             text-decoration: none;
             color: #000;
             font-size: 14px;
@@ -59,47 +57,39 @@
             transition: opacity 0.2s ease;
         }
 
-        .nav-menu a:hover {
+        .menu ul li a:hover {
             opacity: 0.5;
         }
 
-        /* Hero Section */
-        .hero {
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 0 30px;
+        .clear {
+            clear: both;
         }
 
-        .hero-content h1 {
-            font-size: clamp(40px, 8vw, 120px);
-            font-weight: 300;
-            letter-spacing: -2px;
-            margin-bottom: 40px;
+        /* Grid */
+        #boxes {
+            position: relative;
+            margin-bottom: 60px;
         }
 
-        .hero-content p {
-            font-size: 18px;
-            font-weight: 300;
-            max-width: 600px;
-            margin: 0 auto;
-            opacity: 0.7;
+        .box {
+            width: 416px;
+            margin-bottom: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .box img {
+            display: block;
+            width: 100%;
+            height: auto;
         }
 
         /* About Section */
-        .about {
-            padding: 100px 30px;
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
-        .about h2 {
-            font-size: 24px;
-            font-weight: 300;
-            margin-bottom: 60px;
-            text-align: center;
+        .about-section {
+            margin: 60px 0;
+            padding: 40px 0;
+            border-top: 1px solid #000;
+            border-bottom: 1px solid #000;
         }
 
         .about-content {
@@ -113,15 +103,10 @@
             font-size: 16px;
             line-height: 1.6;
             font-weight: 300;
-            text-align: justify;
         }
 
         .about-text p {
             margin-bottom: 20px;
-        }
-
-        .about-image {
-            width: 100%;
         }
 
         .about-image img {
@@ -130,140 +115,13 @@
             display: block;
         }
 
-        /* Work Section */
-        .work {
-            padding: 100px 30px;
-            border-top: 1px solid #000;
-        }
-
-        .work-container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .work h2 {
-            font-size: 24px;
-            font-weight: 300;
-            margin-bottom: 60px;
-            text-align: center;
-        }
-
-        .work-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1px;
-            background: #000;
-        }
-
-        .work-item {
-            background: #fff;
-            aspect-ratio: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 40px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .work-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
-            opacity: 0.1;
-            transition: opacity 0.3s ease;
-            z-index: 1;
-        }
-
-        .work-item[data-category="installations"]::before {
-            background-image: url('./media/LoveSupreme_Installation_1.jpg');
-        }
-
-        .work-item[data-category="audiovisual"]::before {
-            background-image: url('./media/terper-montage-redBlue-1.jpg');
-        }
-
-        .work-item[data-category="music"]::before {
-            background-image: url('./media/terper_and_chimbi.jpg');
-        }
-
-        .work-item[data-category="textile"]::before {
-            background-image: url('./media/paola_girafa_ish.jpg');
-        }
-
-        .work-item[data-category="performance"]::before {
-            background-image: url('./media/terper_balcon_1.jpg');
-        }
-
-        .work-item[data-category="poetry"]::before {
-            background-image: url('./media/halloween_lol.jpg');
-        }
-
-        .work-item:hover::before {
-            opacity: 0.2;
-        }
-
-        .work-item.active::before {
-            opacity: 0.3;
-        }
-
-        .work-item.active {
-            background: #000;
-            color: #fff;
-        }
-
-        .work-item h3 {
-            font-size: 18px;
-            font-weight: 300;
-            position: relative;
-            z-index: 2;
-        }
-
-        /* Gallery Section */
-        .gallery {
-            margin-top: 60px;
-            min-height: 400px;
-        }
-
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .gallery-item {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.3s ease;
-        }
-
-        .gallery-item.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .gallery-item img {
-            width: 100%;
-            height: auto;
-            display: block;
-        }
-
         /* Contact Section */
-        .contact {
-            padding: 100px 30px;
+        .contact-section {
+            padding: 60px 0;
             text-align: center;
-            border-top: 1px solid #000;
         }
 
-        .contact h2 {
+        .contact-section h3 {
             font-size: 24px;
             font-weight: 300;
             margin-bottom: 40px;
@@ -273,10 +131,11 @@
             display: flex;
             justify-content: center;
             gap: 40px;
-            margin-bottom: 60px;
+            flex-wrap: wrap;
         }
 
-        .contact-links a {
+        .contact-links a,
+        .contact-links span {
             color: #000;
             text-decoration: none;
             font-size: 16px;
@@ -288,42 +147,39 @@
             opacity: 0.5;
         }
 
-        .contact-links span {
-            color: #000;
-            font-size: 16px;
-            font-weight: 300;
-        }
-
         /* Footer */
-        .footer {
+        #footer {
             border-top: 1px solid #000;
-            padding: 30px;
+            padding: 30px 0;
             text-align: center;
             font-size: 12px;
             opacity: 0.5;
         }
 
         /* Mobile */
+        @media (max-width: 1000px) {
+            .box {
+                width: 260px;
+            }
+        }
+
         @media (max-width: 768px) {
-            .header {
-                padding: 15px 20px;
+            .wrapper {
+                width: 95%;
             }
 
-            .nav-menu {
-                display: none;
+            .menuHead {
+                padding: 20px 0 15px;
             }
 
-            .hero, .about, .work, .contact {
-                padding: 60px 20px;
+            .menu ul {
+                flex-wrap: wrap;
+                gap: 20px;
             }
 
             .about-content {
                 grid-template-columns: 1fr;
-                gap: 40px;
-            }
-
-            .about-text {
-                text-align: left;
+                gap: 30px;
             }
 
             .contact-links {
@@ -331,17 +187,15 @@
                 gap: 20px;
             }
 
-            .work-grid {
-                grid-template-columns: 1fr;
+            .box {
+                width: 100%;
             }
         }
 
-        /* Smooth scrolling */
         html {
             scroll-behavior: smooth;
         }
 
-        /* Selection */
         ::selection {
             background: #000;
             color: #fff;
@@ -349,169 +203,123 @@
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <nav class="nav-container">
-            <a href="#" class="logo">TERPER.CLUB</a>
-            <ul class="nav-menu">
+
+<div class="wrapper">
+    <div class="menuHead">
+        <h2><a href="#">TERPER.CLUB</a></h2>
+        <div class="clear"></div>
+        <div class="menu">
+            <ul>
                 <li><a href="#about">ABOUT</a></li>
-                <li><a href="#work">WORK</a></li>
                 <li><a href="#contact">CONTACT</a></li>
             </ul>
-        </nav>
-    </header>
-
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="hero-content">
-            <h1>TERPER CLUB</h1>
-            <p>Spoken poetry & broken beats</p>
         </div>
-    </section>
+        <div class="clear"></div>
+    </div>
 
-    <!-- About Section -->
-    <section id="about" class="about">
-        <h2>About</h2>
+    <div id="boxes">
+        <div class="box">
+            <img src="./media/LoveSupreme_Installation_1.jpg" alt="Terper Club work" />
+        </div>
+
+        <div class="box">
+            <img src="./media/terper-montage-redBlue-1.jpg" alt="Terper Club work" />
+        </div>
+
+        <div class="box">
+            <img src="./media/terper_duo_1.jpg" alt="Terper Club work" />
+        </div>
+
+        <div class="box">
+            <img src="./media/terper_and_chimbi.jpg" alt="Terper Club work" />
+        </div>
+
+        <div class="box">
+            <img src="./media/paola_girafa_ish.jpg" alt="Terper Club work" />
+        </div>
+
+        <div class="box">
+            <img src="./media/paola_mist_cl.jpg" alt="Terper Club work" />
+        </div>
+
+        <div class="box">
+            <img src="./media/terper_balcon_1.jpg" alt="Terper Club work" />
+        </div>
+
+        <div class="box">
+            <img src="./media/terper_balcon_2.jpg" alt="Terper Club work" />
+        </div>
+
+        <div class="box">
+            <img src="./media/halloween_lol.jpg" alt="Terper Club work" />
+        </div>
+    </div>
+
+    <div class="about-section" id="about">
         <div class="about-content">
             <div class="about-text">
                 <p>Sound that weaves.</p>
-
                 <p>We create multidisciplinary art installations combining audiovisual work, textile crafting, and music production. Each piece explores the intersection of spoken word, experimental beats, and tactile creation.</p>
-
                 <p>Our work lives in galleries, performance spaces, and anywhere the boundaries between mediums dissolve.</p>
-
                 <p>Based in Barcelona, creating between poetry and percussion.</p>
             </div>
             <div class="about-image">
                 <img src="./media/terper-montage-redBlue-1.jpg" alt="Terper Club work" />
             </div>
         </div>
-    </section>
+    </div>
 
-    <!-- Work Section -->
-    <section id="work" class="work">
-        <div class="work-container">
-            <h2>Selected Work</h2>
-            <div class="work-grid">
-                <div class="work-item" data-category="installations">
-                    <h3>Installations</h3>
-                </div>
-                <div class="work-item" data-category="audiovisual">
-                    <h3>Audiovisual</h3>
-                </div>
-                <div class="work-item" data-category="music">
-                    <h3>Music</h3>
-                </div>
-                <div class="work-item" data-category="textile">
-                    <h3>Textile</h3>
-                </div>
-                <div class="work-item" data-category="performance">
-                    <h3>Performance</h3>
-                </div>
-                <div class="work-item" data-category="poetry">
-                    <h3>Poetry</h3>
-                </div>
-            </div>
-            
-            <div class="gallery">
-                <div class="gallery-grid" id="gallery-grid">
-                    <!-- Images will be loaded here via JavaScript -->
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="contact">
-        <h2>Contact</h2>
+    <div class="contact-section" id="contact">
+        <h3>Contact</h3>
         <div class="contact-links">
             <a href="https://www.instagram.com/terper.club" target="_blank">@terper.club</a>
             <span>terper (dot) club (@) gmail (dot) com</span>
         </div>
-    </section>
+    </div>
 
-    <!-- Footer -->
-    <footer class="footer">
+    <div id="footer">
         <p>&copy; 2025 Terper Club</p>
-    </footer>
+    </div>
+</div>
 
-    <script>
-        // Gallery data - organize your images by category
-        const galleryData = {
-            installations: [
-                'LoveSupreme_Installation_1.jpg'
-            ],
-            audiovisual: [
-                'terper-montage-redBlue-1.jpg',
-                'terper_duo_1.jpg'
-            ],
-            music: [
-                'terper_and_chimbi.jpg'
-            ],
-            textile: [
-                'paola_girafa_ish.jpg',
-                'paola_mist_cl.jpg'
-            ],
-            performance: [
-                'terper_balcon_1.jpg',
-                'terper_balcon_2.jpg'
-            ],
-            poetry: [
-                'halloween_lol.jpg'
-            ]
-        };
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/4.2.2/masonry.pkgd.min.js"></script>
 
-        // Gallery functionality
-        const workItems = document.querySelectorAll('.work-item');
-        const galleryGrid = document.getElementById('gallery-grid');
+<script>
+$(document).ready(function() {
+    function colWidth() {
+        return $(window).width() > 1000 ? 416 : 260;
+    }
+    
+    function gutterWidth() {
+        return $(window).width() > 1000 ? 16 : 10;
+    }
+    
+    function reMasonry() {
+        $('#boxes').masonry('destroy');
+        $('#boxes').masonry({
+            itemSelector: '.box',
+            columnWidth: colWidth(),
+            gutterWidth: gutterWidth()
+        });
+    }
+    
+    reMasonry();
+    $(window).load(reMasonry);
+    $(window).bind("resize", reMasonry);
 
-        function showGallery(category) {
-            // Remove active state from all items
-            workItems.forEach(item => item.classList.remove('active'));
-            
-            // Add active state to clicked item
-            document.querySelector(`[data-category="${category}"]`).classList.add('active');
-            
-            // Clear gallery
-            galleryGrid.innerHTML = '';
-            
-            // Add images for selected category
-            const images = galleryData[category] || [];
-            images.forEach((image, index) => {
-                const galleryItem = document.createElement('div');
-                galleryItem.className = 'gallery-item';
-                galleryItem.innerHTML = `<img src="./media/${image}" alt="${category}" />`;
-                
-                // Add with delay for staggered animation
-                setTimeout(() => {
-                    galleryItem.classList.add('visible');
-                }, index * 100);
-                
-                galleryGrid.appendChild(galleryItem);
-            });
+    // Smooth scrolling
+    $('a[href^="#"]').on('click', function(e) {
+        e.preventDefault();
+        const target = $(this.getAttribute('href'));
+        if (target.length) {
+            $('html, body').animate({
+                scrollTop: target.offset().top - 20
+            }, 600);
         }
+    });
+});
+</script>
 
-        // Add click handlers to work items
-        workItems.forEach(item => {
-            item.addEventListener('click', () => {
-                const category = item.dataset.category;
-                showGallery(category);
-            });
-        });
-
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-    </script>
 </body>
 </html>
