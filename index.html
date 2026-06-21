@@ -410,6 +410,27 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
+// Save homepage scroll position before navigating away (so any return path restores it)
+document.addEventListener('click', function(e) {
+    const link = e.target.closest('a[href]');
+    if (!link) return;
+    const href = link.getAttribute('href');
+    if (!href || href.startsWith('#') || href.startsWith('mailto:')) return;
+    try {
+        if (new URL(link.href).origin === location.origin) {
+            sessionStorage.setItem('homepageScroll', window.scrollY);
+        }
+    } catch (err) {}
+});
+
+// Restore on (re)load — also handles bfcache restores via pageshow
+window.addEventListener('pageshow', function() {
+    const saved = sessionStorage.getItem('homepageScroll');
+    if (saved !== null) {
+        window.scrollTo(0, parseInt(saved, 10));
+    }
+});
+
 $(document).ready(function() {
     // Smooth scrolling
     $('a[href^="#"]').on('click', function(e) {
