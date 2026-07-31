@@ -468,6 +468,22 @@ else
     bad 'No page files at the root; the whole-site audit has nothing to walk'
 fi
 
+# Every photograph carries a description. Screen readers announce nothing for
+# alt="", so an empty one is not a neutral default here: nothing on this site
+# is decorative, every image is the work. Counting <img> against non-empty alt
+# catches both the missing attribute and the empty one, which a presence test
+# would wave through. No images at all means the extraction broke, so it fails
+# rather than reporting a clean sweep of nothing.
+nimg=$(grep -oh '<img ' ./*.html | wc -l | tr -d ' ')
+nalt=$(grep -ohE 'alt="[^"]+"' ./*.html | wc -l | tr -d ' ')
+if [ "$nimg" -eq 0 ]; then
+    bad 'No images found; the alt-text audit examined nothing'
+elif [ "$nimg" -eq "$nalt" ]; then
+    ok "All $nimg images carry a non-empty alt"
+else
+    bad "$nimg images but $nalt non-empty alt attributes"
+fi
+
 # This loop is the script's one summary check: four assertions over every
 # page, reported as a single line. Its ok must therefore be earned; an
 # unconditional one would print "audited" on the same run it prints FAIL.
@@ -548,11 +564,16 @@ else
 fi
 
 # Every internal link resolves. GitHub Pages serves art.html at /art, so a
-# link with no extension is checked against <name>.html.
+# link with no extension is checked against <name>.html. The pattern accepts
+# either quote style: matching only double quotes would walk past a
+# single-quoted link and still print ok. Extracting nothing fails, because a
+# broken extractor otherwise reports a clean sweep of an empty set.
 printf '\nLink integrity\n'
 broken=''
+nlinks=0
 for f in $pages; do
-    for href in $(grep -ohE 'href="\.\/[^"#]*"' "$f" | sed -E 's/href="\.\///; s/"//'); do
+    for href in $(grep -ohE 'href=["'"'"']\.\/[^"'"'"'#]*' "$f" | sed -E 's/href=["'"'"']\.\///'); do
+        nlinks=$((nlinks + 1))
         target="$href"
         case "$target" in
             '')            target='index.html' ;;
@@ -563,20 +584,29 @@ for f in $pages; do
         [ -e "$target" ] || broken="$broken $f->$href"
     done
 done
-if [ -z "$broken" ]; then
-    ok 'Every internal link resolves'
+if [ "$nlinks" -eq 0 ]; then
+    bad 'No internal links extracted; link integrity examined nothing'
+elif [ -z "$broken" ]; then
+    ok "All $nlinks internal links resolve"
 else
     bad "Broken internal links:$broken"
 fi
 
-# Every referenced media file exists.
+# Every referenced media file exists. Same two faults as the check above had:
+# the pattern read double quotes only, so a single-quoted src was never
+# tested, and an empty extraction printed ok. The CSS pass below has been
+# hardened this way since it was written; this one had not.
+srcs=$(grep -ohE '(src|href)=["'"'"']\./media/[^"'"'"']+' ./*.html 2>/dev/null \
+       | sed -E 's/.*=["'"'"']\.\///' | sort -u || true)
+nsrcs=$(printf '%s' "$srcs" | grep -c . || true)
 missing=''
-for src in $(grep -ohE '(src|href)="\.\/media\/[^"]+"' ./*.html 2>/dev/null \
-             | sed -E 's/.*="\.\///; s/"//' | sort -u); do
+for src in $srcs; do
     [ -e "$src" ] || missing="$missing $src"
 done
-if [ -z "$missing" ]; then
-    ok 'Every referenced media file exists'
+if [ "$nsrcs" -eq 0 ]; then
+    bad 'No media references found in the HTML; extraction is broken'
+elif [ -z "$missing" ]; then
+    ok "Every referenced media file exists ($nsrcs checked)"
 else
     bad "Missing media:$missing"
 fi
