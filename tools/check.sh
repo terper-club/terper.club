@@ -226,10 +226,18 @@ else
     bad 'RDMT Linktree link missing or unfixed'
 fi
 
-if [ -s bio.html ] && grep -q 'terper-montage-redBlue-1.jpg' bio.html; then
-    ok 'Bio carries the montage image'
+# Bio carries one portrait beside the prose. Assert that an image is there
+# and that the file it names exists, but not which photograph it is: naming
+# one meant every deliberate swap tripped this check as though it were a
+# regression. An empty extraction is a failure, not a pass.
+bioimg=$(tr '\n' ' ' < bio.html 2>/dev/null | grep -oE '<img[^>]*src="\./media/[^"]+"' \
+         | sed -E 's/.*src="\.\///; s/".*//' | head -1)
+if [ -z "$bioimg" ]; then
+    bad 'Bio carries no image, or the extraction is broken'
+elif [ ! -s "$bioimg" ]; then
+    bad "Bio image names a file that does not exist: $bioimg"
 else
-    bad 'Bio montage image missing'
+    ok "Bio carries its image ($bioimg)"
 fi
 
 if [ -s contact.html ] && grep -q 'terper (dot) club (@) gmail (dot) com' contact.html; then
