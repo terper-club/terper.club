@@ -155,16 +155,21 @@ check_tiles art.html 8
 check_tiles live.html 3
 check_tiles releases.html 3
 
-# Art and Live tiles must open pages on this site. The allow-list check
-# cannot catch an off-site tile, because every plausible destination is
-# already an allowed host. releases.html is deliberately excluded: its
-# three tiles point at Bandcamp and SoundCloud by design.
-offsite=$(grep -hoE '<a class="tile" href="[^"]*"' art.html live.html 2>/dev/null \
-          | grep -vE 'href="\./' || true)
-if [ -z "$offsite" ]; then
-    ok 'Every Art and Live tile links inside the site'
+# Art and Live tiles must open pages on this site. Attribute order is not
+# guaranteed, so match the tag and then inspect its href; and assert the
+# tile count, because "found no tiles" must not read as "no bad tiles".
+# releases.html is excluded on purpose: its three tiles are Bandcamp and
+# SoundCloud by design.
+tiles=$(tr '\n' ' ' < art.html | grep -oE '<a [^>]*class="tile"[^>]*>'; \
+        tr '\n' ' ' < live.html | grep -oE '<a [^>]*class="tile"[^>]*>')
+ntiles=$(printf '%s\n' "$tiles" | grep -c '<a' || true)
+offsite=$(printf '%s\n' "$tiles" | grep -vE "href=[\"']\./" || true)
+if [ "$ntiles" -ne 11 ]; then
+    bad "Expected 11 Art+Live tiles, extracted $ntiles; extraction is broken"
+elif [ -z "$offsite" ]; then
+    ok 'All 11 Art and Live tiles link inside the site'
 else
-    bad "Off-site tile: $(echo "$offsite" | tr '\n' ' ')"
+    bad "Off-site tile: $(printf '%s' "$offsite" | head -1)"
 fi
 
 if [ -s live.html ] && grep -q 'terper_dates_late2026.jpg' live.html; then
@@ -192,8 +197,11 @@ if [ -s releases.html ]; then
 fi
 
 # rel=noopener is the floor on every new-tab link, not just releases'.
-unsafe=$(grep -ohE '<a [^>]*target="_blank"[^>]*>' ./*.html \
-         | grep -v 'rel="noopener' || true)
+# Flattened: <a> tags wrap across lines in this codebase (see :369, :393).
+unsafe=$(for f in ./*.html; do
+             tr '\n' ' ' < "$f" | grep -oE '<a [^>]*target=["'"'"']?_blank[^>]*>' \
+               | grep -vE "rel=[\"'][^\"']*noopener" | sed "s|^|$f: |"
+         done || true)
 if [ -z "$unsafe" ]; then
     ok 'Every target=_blank link carries rel=noopener'
 else
@@ -309,9 +317,19 @@ done
 # grep -oE (not sed) because BSD sed cannot take `t` with a `;` after it,
 # and because an empty result is exactly what a chain endpoint should give.
 nav_target() {   # $1 = file, $2 = Previous|Next
-    tr '\n' ' ' < "$1" \
-      | grep -oE "nav-label\">$2</div>[^<]*<a href=\"\./[a-zA-Z0-9._-]+\"" \
-      | sed -E 's|.*href="\./||; s|"$||'
+    # Capture whatever href is there, not just an already-internal one: a
+    # chain endpoint must show up empty because there is no <a> at all, not
+    # because an off-site href failed to match "href=\"\./". An href that
+    # does not start with ./ is tagged OFFSITE so it can never be mistaken
+    # for a legitimate bare page name or a legitimate empty endpoint.
+    href=$(tr '\n' ' ' < "$1" \
+      | grep -oE "nav-label\">$2</div>[^<]*<a href=[\"'][^\"']*[\"']" \
+      | sed -E 's|.*href=.||; s|.$||')
+    case "$href" in
+        '')  printf '' ;;
+        ./*) printf '%s' "${href#./}" ;;
+        *)   printf 'OFFSITE:%s' "$href" ;;
+    esac
 }
 
 check_chain() {   # $1 = chain name, rest = pages in order
@@ -373,7 +391,10 @@ for p in $EMBED_DONE; do
         bad "$f embed is not lazy-loaded"
     fi
 
-    if grep '<iframe' "$f" | grep -qE '(width|height)="[0-9]'; then
+    # Flatten first: every iframe in this codebase spans three lines (see
+    # the lazy-load check above), so width/height on a continuation line
+    # would be invisible to a line-scoped grep.
+    if tr '\n' ' ' < "$f" | grep -oE '<iframe[^>]*>' | grep -qE '(width|height)="[0-9]'; then
         bad "$f iframe still has a hardcoded pixel size"
     else
         ok "$f iframe has no hardcoded size"
@@ -416,8 +437,12 @@ fi
 # This loop is the script's one summary check: four assertions over every
 # page, reported as a single line. Its ok must therefore be earned; an
 # unconditional one would print "audited" on the same run it prints FAIL.
-# A local flag, not $fail: bad() sets fail=1 stickily, so a failure in any
-# earlier section would make a $fail comparison pass here regardless.
+# A local flag, not $fail: fail only ever moves from 0 to 1, so a $fail
+# check here could never wrongly grant this ok; an earlier failure can
+# only suppress it, never fake it. The local flag exists for a different
+# reason: decoupling. Under $fail, a failure in some earlier, unrelated
+# section would silently delete this section's ok line too, even though
+# the four assertions above all held.
 styleclean=1
 
 for f in $pages; do
@@ -428,7 +453,7 @@ for f in $pages; do
         styleclean=0
     fi
 
-    if grep -qE '[[:space:]]style=' "$f"; then
+    if grep -qE '(^|[[:space:]])style=' "$f"; then
         bad "$f still has a style= attribute"
         styleclean=0
     fi
@@ -462,12 +487,22 @@ else
 fi
 
 # The allow-list extractor above only sees absolute https?:// URLs, so a
-# protocol-relative reference would leave the origin unnoticed.
-protorel=$(grep -ohE '(src|href)="//[a-zA-Z0-9.-]+' ./*.html | sort -u || true)
+# protocol-relative reference would leave the origin unnoticed. Quoting is
+# optional and may be single, double, or absent.
+protorel=$(grep -ohE '(src|href)=["'"'"']?//[a-zA-Z0-9.-]+' ./*.html | sort -u || true)
 if [ -z "$protorel" ]; then
     ok 'No protocol-relative external reference'
 else
     bad "Protocol-relative reference: $(echo "$protorel" | tr '\n' ' ')"
+fi
+
+# The HTML check above cannot see the stylesheet: an unguarded remote or
+# protocol-relative @import there would load a remote origin unnoticed.
+cssimport=$(grep -ohiE '@import[^;]*(https?:|//)' ./css/*.css || true)
+if [ -z "$cssimport" ]; then
+    ok 'Stylesheet imports nothing remote'
+else
+    bad "Remote @import in CSS: $(printf '%s' "$cssimport" | head -1)"
 fi
 
 # Exactly six YouTube embeds, no more and no fewer.
@@ -514,14 +549,22 @@ fi
 
 # The stylesheet spells its references url(../media/…), which the HTML
 # pattern above cannot match, so give CSS its own pass rather than a
-# vacuous argument.
+# vacuous argument. url() may be quoted or spaced, and an empty extraction
+# must not read as success; that is the vacuous shape this script has
+# shipped before. Paths come out media/foo.png, relative to the repo root
+# (../media/ is relative to css/), so the existence test below must not
+# re-prepend media/.
+cssrefs=$(grep -ohE 'url\([[:space:]]*["'"'"']?\.\./media/[^)"'"'"']+' ./css/*.css 2>/dev/null \
+          | sed -E 's|.*\.\./||' | sort -u || true)
+nrefs=$(printf '%s' "$cssrefs" | grep -c . || true)
 cssmissing=''
-for src in $(grep -ohE 'url\(\.\./media/[^)]+\)' ./css/*.css 2>/dev/null \
-             | sed -E 's|.*url\(\.\./||; s|\)$||' | sort -u); do
+for src in $cssrefs; do
     [ -e "$src" ] || cssmissing="$cssmissing $src"
 done
-if [ -z "$cssmissing" ]; then
-    ok 'Every media file referenced from CSS exists'
+if [ "$nrefs" -eq 0 ]; then
+    bad 'No media references found in CSS; extraction is broken'
+elif [ -z "$cssmissing" ]; then
+    ok "Every media file referenced from CSS exists ($nrefs checked)"
 else
     bad "CSS references missing media:$cssmissing"
 fi
@@ -529,7 +572,10 @@ fi
 # Originals and config survive.
 have CNAME 'CNAME kept'
 
-titles=$(grep -h '<title>' ./*.html | wc -l | tr -d ' ')
+# -o counts tags, not lines: grep -c would count a page with two <title>-
+# bearing lines once, and undercount a title-less page that another page's
+# spare match happens to paper over.
+titles=$(grep -oh '<title>' ./*.html | wc -l | tr -d ' ')
 if [ "$titles" -eq 17 ]; then
     ok 'All 17 pages have a title'
 else
@@ -559,18 +605,32 @@ else
 fi
 
 # A1 standardised on the Catalan "Centre Cívic". Keep the old spelling from
-# creeping back through a copy-paste from the pre-redesign source.
-if grep -q 'Civico' ./*.html; then
-    bad "Old venue spelling 'Civico' is back: $(grep -l 'Civico' ./*.html | tr '\n' ' ')"
+# creeping back through a copy-paste from the pre-redesign source. The match
+# is case-insensitive, since "civico" and "Civico" are both regressions, and
+# it asserts the correct spelling is actually present rather than trusting
+# the absence of the wrong one: an ok must survive deleting the venue name.
+if grep -qi 'civico' ./*.html; then
+    bad "Old venue spelling is back: $(grep -li 'civico' ./*.html | tr '\n' ' ')"
+elif [ "$(grep -oh 'Centre Cívic' ./*.html | wc -l | tr -d ' ')" -eq 8 ]; then
+    ok 'Venue is spelled Centre Cívic in all 8 places'
 else
-    ok 'Venue is spelled Centre Cívic throughout'
+    bad "Expected 8 'Centre Cívic', found $(grep -oh 'Centre Cívic' ./*.html | wc -l | tr -d ' ')"
 fi
 
-n=$(grep -oh 'aria-current="page"' ./*.html | wc -l | tr -d ' ')
-if [ "$n" -eq 16 ]; then
+# A bare count proves nothing: aria-current on the wrong nav item still
+# passes a total. It must sit on the same <a> as class="is-current".
+miswired=''
+for f in ./*.html; do
+    [ "$f" = "./index.html" ] && continue
+    tr '\n' ' ' < "$f" \
+      | grep -oE '<a [^>]*class="is-current"[^>]*>' \
+      | grep -q 'aria-current="page"' \
+      || miswired="$miswired $f"
+done
+if [ -z "$miswired" ]; then
     ok 'All 16 interior pages mark their current nav item'
 else
-    bad "Found $n aria-current=page attributes, expected 16"
+    bad "aria-current missing from the is-current link:$miswired"
 fi
 
 printf '\n'

@@ -603,12 +603,3 @@ body.splash {
         font-size: 12px;
     }
 }
-
-/* A visitor who has asked their OS to reduce motion gets a still frame.
-   The video is decorative (an animated gig poster), so freezing it costs
-   them nothing. Inherited markup keeps autoplay for everyone else. */
-@media (prefers-reduced-motion: reduce) {
-    .media-item video {
-        animation-play-state: paused;
-    }
-}
