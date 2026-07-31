@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Art — Terper Club</title>
+    <link rel="stylesheet" href="./css/terper.css">
+</head>
+<body>
+<div class="wrapper">
+
+    <header class="site-head">
+        <a class="logo-link" href="./"><span class="logo">Terper</span></a>
+        <nav class="nav-h">
+            <a href="./art" class="is-current" aria-current="page">Art</a>
+            <a href="./live">Live</a>
+            <a href="./releases">Releases</a>
+            <a href="./bio">Bio</a>
+            <a href="./contact">Contact</a>
+        </nav>
+    </header>
+
+    <div class="page-head">
+        <h1 class="page-title">Art</h1>
+    </div>
+
+    <div class="grid">
+
+        <a class="tile" href="./mycelium-parlour-1">
+            <img src="./media/mycelium_parlour_1.jpg" alt="Mycelium Parlour at NEST Festival" loading="lazy">
+            <span class="tile-cap">
+                <span class="cap-name">Mycelium Parlour</span>
+                <span class="cap-venue">NEST Festival</span>
+            </span>
+        </a>
+
+        <a class="tile" href="./inorganic-interruptions-1">
+            <img src="./media/inorganic-interruptions-1.jpg" alt="Inorganic Interruptions at Espronceda" loading="lazy">
+            <span class="tile-cap">
+                <span class="cap-name">Inorganic Interruptions</span>
+                <span class="cap-venue">Espronceda</span>
+            </span>
+        </a>
+
+        <a class="tile" href="./displacement-2">
+            <img src="./media/LoveSupreme_Installation_1.jpg" alt="Displacement at A Love Supreme Festival, Konvent Zero" loading="lazy">
+            <span class="tile-cap">
+                <span class="cap-name">A Love Supreme</span>
+                <span class="cap-venue">Konvent Zero</span>
+            </span>
+        </a>
+
+        <a class="tile" href="./displacement-1">
+            <img src="./media/Zilzal_Installation_1.jpg" alt="Displacement at Zilzal Sonic Ceremony II, Calafou" loading="lazy">
+            <span class="tile-cap">
+                <span class="cap-name">Zilzal II</span>
+                <span class="cap-venue">Calafou</span>
+            </span>
+        </a>
+
+        <a class="tile" href="./amygdala-1">
+            <img src="./media/amygdala-barceloneta-diego-1.jpg" alt="Amygdala at Centre Cívic de Barceloneta" loading="lazy">
+            <span class="tile-cap">
+                <span class="cap-name">Amygdala</span>
+                <span class="cap-venue">Centre Cívic de Barceloneta</span>
+            </span>
+        </a>
+
+        <a class="tile" href="./tortuga-1">
+            <img src="./media/jardi-tortugas-1.jpg" alt="El Jardí de les Tortugues" loading="lazy">
+            <span class="tile-cap">
+                <span class="cap-name">El Jardí de les Tortugues</span>
+            </span>
+        </a>
+
+        <a class="tile" href="./breathing-waves-2">
+            <img src="./media/breathing-waves-artesania-twins-1.jpg" alt="Breathing Waves at Centre d'Artesania de Catalunya" loading="lazy">
+            <span class="tile-cap">
+                <span class="cap-name">Breathing Waves</span>
+                <span class="cap-venue">Centre d'Artesania de Catalunya</span>
+            </span>
+        </a>
+
+        <a class="tile" href="./breathing-waves-1">
+            <img src="./media/breathing-waves-macba-sara-1.jpg" alt="Breathing Waves at MACBA" loading="lazy">
+            <span class="tile-cap">
+                <span class="cap-name">Breathing Waves</span>
+                <span class="cap-venue">MACBA</span>
+            </span>
+        </a>
+
+    </div>
+
+    <footer class="site-foot">
+        <nav class="foot-links">
+            <a href="https://www.instagram.com/terper.club" target="_blank" rel="noopener">Instagram</a>
+            <a href="https://www.youtube.com/@TERPERCLUB" target="_blank" rel="noopener">YouTube</a>
+            <a href="https://terper.bandcamp.com" target="_blank" rel="noopener">Bandcamp</a>
+            <a href="https://soundcloud.com/terperclub" target="_blank" rel="noopener">SoundCloud</a>
+        </nav>
+        <p>&copy; 2026 Terper Club</p>
+    </footer>
+
+</div>
+
+<script>
+// Remember where the visitor was so returning from a detail page lands them
+// back in place. Keyed per category so Art and Live do not overwrite each
+// other. pageshow rather than load, so bfcache restores are covered too.
+(function () {
+    var KEY = 'scroll:art';
+    document.addEventListener('click', function (e) {
+        var link = e.target.closest('a[href]');
+        if (!link) return;
+        try {
+            if (new URL(link.href).origin === location.origin) {
+                sessionStorage.setItem(KEY, String(window.scrollY));
+            }
+        } catch (err) {}
+    });
+    window.addEventListener('pageshow', function () {
+        try {
+            var saved = sessionStorage.getItem(KEY);
+            if (saved !== null) window.scrollTo(0, parseInt(saved, 10));
+        } catch (err) {}
+    });
+})();
+</script>
+
+</body>
+</html>

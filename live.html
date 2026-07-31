@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live — Terper Club</title>
+    <link rel="stylesheet" href="./css/terper.css">
+</head>
+<body>
+<div class="wrapper">
+
+    <header class="site-head">
+        <a class="logo-link" href="./"><span class="logo">Terper</span></a>
+        <nav class="nav-h">
+            <a href="./art">Art</a>
+            <a href="./live" class="is-current" aria-current="page">Live</a>
+            <a href="./releases">Releases</a>
+            <a href="./bio">Bio</a>
+            <a href="./contact">Contact</a>
+        </nav>
+    </header>
+
+    <div class="page-head">
+        <h1 class="page-title">Live</h1>
+    </div>
+
+    <img class="poster" src="./media/terper_dates_late2026.jpg" alt="Terper live dates, late 2026">
+
+    <div class="grid">
+
+        <a class="tile" href="./terper-live-3">
+            <img src="./media/terper_live_202605-3.jpg" alt="Terper live at Sala Taro" loading="lazy">
+            <span class="tile-cap">
+                <span class="cap-name">Terper (Live)</span>
+                <span class="cap-venue">Sala Taro</span>
+            </span>
+        </a>
+
+        <a class="tile" href="./terper-live-2">
+            <img src="./media/terper_live_202603-3.jpg" alt="Terper live at Modular Day BCN" loading="lazy">
+            <span class="tile-cap">
+                <span class="cap-name">Terper (Live)</span>
+                <span class="cap-venue">Modular Day BCN</span>
+            </span>
+        </a>
+
+        <a class="tile" href="./terper-live-1">
+            <img src="./media/terper_live_202601-3.jpg" alt="Terper live at Craftwork Station" loading="lazy">
+            <span class="tile-cap">
+                <span class="cap-name">Terper (Live)</span>
+                <span class="cap-venue">Craftwork Station</span>
+            </span>
+        </a>
+
+    </div>
+
+    <footer class="site-foot">
+        <nav class="foot-links">
+            <a href="https://www.instagram.com/terper.club" target="_blank" rel="noopener">Instagram</a>
+            <a href="https://www.youtube.com/@TERPERCLUB" target="_blank" rel="noopener">YouTube</a>
+            <a href="https://terper.bandcamp.com" target="_blank" rel="noopener">Bandcamp</a>
+            <a href="https://soundcloud.com/terperclub" target="_blank" rel="noopener">SoundCloud</a>
+        </nav>
+        <p>&copy; 2026 Terper Club</p>
+    </footer>
+
+</div>
+
+<script>
+// Remember where the visitor was so returning from a detail page lands them
+// back in place. Keyed per category so Art and Live do not overwrite each
+// other. pageshow rather than load, so bfcache restores are covered too.
+(function () {
+    var KEY = 'scroll:live';
+    document.addEventListener('click', function (e) {
+        var link = e.target.closest('a[href]');
+        if (!link) return;
+        try {
+            if (new URL(link.href).origin === location.origin) {
+                sessionStorage.setItem(KEY, String(window.scrollY));
+            }
+        } catch (err) {}
+    });
+    window.addEventListener('pageshow', function () {
+        try {
+            var saved = sessionStorage.getItem(KEY);
+            if (saved !== null) window.scrollTo(0, parseInt(saved, 10));
+        } catch (err) {}
+    });
+})();
+</script>
+
+</body>
+</html>
