@@ -265,6 +265,14 @@ body.splash {
     transition: opacity 0.22s ease;
 }
 
+/* Tiles anchor their square crop to the top, which suits every cover whose
+   subject sits high in the frame. Mycelium Parlour's is a night shot with
+   the installation low against the treeline, so a top crop shows sky and
+   little else. This anchors that one to the bottom instead. */
+.tile img.crop-bottom {
+    object-position: bottom;
+}
+
 .tile:hover img {
     opacity: 0.72;
 }
