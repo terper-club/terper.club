@@ -495,10 +495,17 @@ body.splash {
     align-items: start;
 }
 
-.bio-image img {
+.bio-image img,
+.contact-image img {
     display: block;
     width: 100%;
     height: auto;
+}
+
+/* Contact is two lines of text on its own. The photograph sits under them
+   at full width, spaced to match the gap the page heading already leaves. */
+.contact-image {
+    margin-top: 40px;
 }
 
 .contact-block {
