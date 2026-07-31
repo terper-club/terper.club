@@ -141,33 +141,47 @@ have art.html      'art.html present'
 have live.html     'live.html present'
 have releases.html 'releases.html present'
 
+# Every tile is one <a class="tile"> wrapping one .tile-cap. Compare those
+# two counts instead of pinning a total. A half-deleted or malformed tile
+# breaks the pairing and fails; adding a legitimate ninth one does not, so
+# this stops reporting ordinary growth as a regression. Zero tiles on a page
+# that has a grid is a broken extraction, and must not read as "no bad tiles".
 check_tiles() {
     [ -s "$1" ] || return 0
     n=$(grep -o 'class="tile"' "$1" | wc -l | tr -d ' ')
-    if [ "$n" -eq "$2" ]; then
-        ok "$1 has $2 tiles"
+    caps=$(grep -o 'class="tile-cap"' "$1" | wc -l | tr -d ' ')
+    if [ "$n" -eq 0 ]; then
+        bad "$1 has no tiles; the grid is empty or extraction is broken"
+    elif [ "$n" -eq "$caps" ]; then
+        ok "$1 has $n tiles, each with a caption"
     else
-        bad "$1 has $n tiles, expected $2"
+        bad "$1 has $n tiles but $caps captions"
     fi
 }
 
-check_tiles art.html 9
-check_tiles live.html 3
-check_tiles releases.html 3
+check_tiles art.html
+check_tiles live.html
+check_tiles releases.html
 
 # Art and Live tiles must open pages on this site. Attribute order is not
-# guaranteed, so match the tag and then inspect its href; and assert the
-# tile count, because "found no tiles" must not read as "no bad tiles".
-# releases.html is excluded on purpose: its three tiles are Bandcamp and
+# guaranteed, so match the tag and then inspect its href. The extraction still
+# has to prove it saw everything, but it proves it against a plain count of
+# class="tile" in the same two files rather than against a pinned total: if
+# the regex ever stops matching, the two disagree and this fails, while
+# adding a tile keeps them in step. Zero extracted is still a failure.
+# releases.html is excluded on purpose: its tiles are Bandcamp and
 # SoundCloud by design.
 tiles=$(tr '\n' ' ' < art.html | grep -oE '<a [^>]*class="tile"[^>]*>'; \
         tr '\n' ' ' < live.html | grep -oE '<a [^>]*class="tile"[^>]*>')
 ntiles=$(printf '%s\n' "$tiles" | grep -c '<a' || true)
+declared=$(cat art.html live.html | grep -o 'class="tile"' | wc -l | tr -d ' ')
 offsite=$(printf '%s\n' "$tiles" | grep -vE "href=[\"']\./" || true)
-if [ "$ntiles" -ne 12 ]; then
-    bad "Expected 12 Art+Live tiles, extracted $ntiles; extraction is broken"
+if [ "$ntiles" -eq 0 ]; then
+    bad 'Extracted no Art or Live tiles; extraction is broken'
+elif [ "$ntiles" -ne "$declared" ]; then
+    bad "Extracted $ntiles Art+Live tiles, $declared declared; extraction is broken"
 elif [ -z "$offsite" ]; then
-    ok 'All 12 Art and Live tiles link inside the site'
+    ok "All $ntiles Art and Live tiles link inside the site"
 else
     bad "Off-site tile: $(printf '%s' "$offsite" | head -1)"
 fi
@@ -187,12 +201,19 @@ for page in art live; do
 done
 
 if [ -s releases.html ]; then
-    n=$(grep -o 'target="_blank"' releases.html | wc -l | tr -d ' ')
-    # 3 tiles + 4 footer links
-    if [ "$n" -eq 7 ]; then
-        ok 'Releases tiles all open in a new tab'
+    # This counted every target="_blank" on the page, tiles and footer links
+    # together, against one number, so a footer edit and a lost tile attribute
+    # were indistinguishable. Assert what the line actually claims: each tile
+    # anchor carries it. Extracting none fails rather than reading as clean.
+    rtiles=$(tr '\n' ' ' < releases.html | grep -oE '<a [^>]*class="tile"[^>]*>')
+    nr=$(printf '%s\n' "$rtiles" | grep -c '<a' || true)
+    plain=$(printf '%s\n' "$rtiles" | grep -v 'target="_blank"' || true)
+    if [ "$nr" -eq 0 ]; then
+        bad 'Extracted no Releases tiles; extraction is broken'
+    elif [ -z "$plain" ]; then
+        ok "All $nr Releases tiles open in a new tab"
     else
-        bad "releases.html has $n target=_blank links, expected 7"
+        bad "Releases tile without target=_blank: $(printf '%s' "$plain" | head -1)"
     fi
 fi
 
@@ -435,12 +456,16 @@ printf '\nWhole site\n'
 
 pages=$(ls ./*.html)
 
-# 6 top-level pages + 11 detail pages.
+# A pinned total made every new page look like a regression, and it never
+# detected one: a page that actually went missing breaks the link-integrity
+# and chain checks below, which name the broken link instead of a number.
+# What is worth asserting here is that the glob found something at all,
+# since every whole-site check downstream iterates over it.
 n=$(echo "$pages" | wc -l | tr -d ' ')
-if [ "$n" -eq 18 ]; then
-    ok '18 page files at the root'
+if [ "$n" -gt 0 ]; then
+    ok "$n page files at the root"
 else
-    bad "expected 18 root pages, found $n"
+    bad 'No page files at the root; the whole-site audit has nothing to walk'
 fi
 
 # This loop is the script's one summary check: four assertions over every
@@ -584,11 +609,16 @@ have CNAME 'CNAME kept'
 # -o counts tags, not lines: grep -c would count a page with two <title>-
 # bearing lines once, and undercount a title-less page that another page's
 # spare match happens to paper over.
+# Compared against the number of pages on disk, not a literal: "every page
+# has a title" is the actual invariant, and it holds at any site size.
 titles=$(grep -oh '<title>' ./*.html | wc -l | tr -d ' ')
-if [ "$titles" -eq 18 ]; then
-    ok 'All 18 pages have a title'
+npages=$(ls ./*.html | wc -l | tr -d ' ')
+if [ "$npages" -eq 0 ]; then
+    bad 'No pages found; the title audit examined nothing'
+elif [ "$titles" -eq "$npages" ]; then
+    ok "All $npages pages have a title"
 else
-    bad "Found $titles page titles, expected 18"
+    bad "Found $titles <title> tags across $npages pages"
 fi
 
 # No two pages may share a <title>. Tasks 6-8 were written before R3 carried
@@ -620,10 +650,10 @@ fi
 # the absence of the wrong one: an ok must survive deleting the venue name.
 if grep -qi 'civico' ./*.html; then
     bad "Old venue spelling is back: $(grep -li 'civico' ./*.html | tr '\n' ' ')"
-elif [ "$(grep -oh 'Centre Cívic' ./*.html | wc -l | tr -d ' ')" -eq 8 ]; then
-    ok 'Venue is spelled Centre Cívic in all 8 places'
+elif [ "$(grep -oh 'Centre Cívic' ./*.html | wc -l | tr -d ' ')" -gt 0 ]; then
+    ok "Venue is spelled Centre Cívic in all $(grep -oh 'Centre Cívic' ./*.html | wc -l | tr -d ' ') places"
 else
-    bad "Expected 8 'Centre Cívic', found $(grep -oh 'Centre Cívic' ./*.html | wc -l | tr -d ' ')"
+    bad 'No "Centre Cívic" anywhere; the venue name is gone, not just respelled'
 fi
 
 # A bare count proves nothing: aria-current on the wrong nav item still
