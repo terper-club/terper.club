@@ -151,7 +151,7 @@ check_tiles() {
     fi
 }
 
-check_tiles art.html 8
+check_tiles art.html 9
 check_tiles live.html 3
 check_tiles releases.html 3
 
@@ -164,10 +164,10 @@ tiles=$(tr '\n' ' ' < art.html | grep -oE '<a [^>]*class="tile"[^>]*>'; \
         tr '\n' ' ' < live.html | grep -oE '<a [^>]*class="tile"[^>]*>')
 ntiles=$(printf '%s\n' "$tiles" | grep -c '<a' || true)
 offsite=$(printf '%s\n' "$tiles" | grep -vE "href=[\"']\./" || true)
-if [ "$ntiles" -ne 11 ]; then
-    bad "Expected 11 Art+Live tiles, extracted $ntiles; extraction is broken"
+if [ "$ntiles" -ne 12 ]; then
+    bad "Expected 12 Art+Live tiles, extracted $ntiles; extraction is broken"
 elif [ -z "$offsite" ]; then
-    ok 'All 11 Art and Live tiles link inside the site'
+    ok 'All 12 Art and Live tiles link inside the site'
 else
     bad "Off-site tile: $(printf '%s' "$offsite" | head -1)"
 fi
@@ -249,11 +249,11 @@ fi
 # --- Task 6: detail pages ---
 printf '\nDetail pages\n'
 
-ART_PAGES='mycelium-parlour-1 inorganic-interruptions-1 displacement-2 displacement-1 amygdala-1 tortuga-1 breathing-waves-2 breathing-waves-1'
+ART_PAGES='displacement-3 mycelium-parlour-1 inorganic-interruptions-1 displacement-2 displacement-1 amygdala-1 tortuga-1 breathing-waves-2 breathing-waves-1'
 LIVE_PAGES='terper-live-3 terper-live-2 terper-live-1'
 
 # done_pages lists the pages converted so far; extend it in Tasks 7, 8 and 9.
-DONE_PAGES='mycelium-parlour-1 amygdala-1 inorganic-interruptions-1 displacement-2 displacement-1 tortuga-1 breathing-waves-2 breathing-waves-1 terper-live-1 terper-live-2 terper-live-3'
+DONE_PAGES='displacement-3 mycelium-parlour-1 amygdala-1 inorganic-interruptions-1 displacement-2 displacement-1 tortuga-1 breathing-waves-2 breathing-waves-1 terper-live-1 terper-live-2 terper-live-3'
 
 for p in $DONE_PAGES; do
     f="$p.html"
@@ -368,7 +368,8 @@ check_chain() {   # $1 = chain name, rest = pages in order
 }
 
 check_chain Art breathing-waves-1 breathing-waves-2 tortuga-1 amygdala-1 \
-    displacement-1 displacement-2 inorganic-interruptions-1 mycelium-parlour-1
+    displacement-1 displacement-2 inorganic-interruptions-1 mycelium-parlour-1 \
+    displacement-3
 check_chain Live terper-live-1 terper-live-2 terper-live-3
 
 # --- Task 7: video embeds ---
@@ -436,10 +437,10 @@ pages=$(ls ./*.html)
 
 # 6 top-level pages + 11 detail pages.
 n=$(echo "$pages" | wc -l | tr -d ' ')
-if [ "$n" -eq 17 ]; then
-    ok '17 page files at the root'
+if [ "$n" -eq 18 ]; then
+    ok '18 page files at the root'
 else
-    bad "expected 17 root pages, found $n"
+    bad "expected 18 root pages, found $n"
 fi
 
 # This loop is the script's one summary check: four assertions over every
@@ -584,10 +585,10 @@ have CNAME 'CNAME kept'
 # bearing lines once, and undercount a title-less page that another page's
 # spare match happens to paper over.
 titles=$(grep -oh '<title>' ./*.html | wc -l | tr -d ' ')
-if [ "$titles" -eq 17 ]; then
-    ok 'All 17 pages have a title'
+if [ "$titles" -eq 18 ]; then
+    ok 'All 18 pages have a title'
 else
-    bad "Found $titles page titles, expected 17"
+    bad "Found $titles page titles, expected 18"
 fi
 
 # No two pages may share a <title>. Tasks 6-8 were written before R3 carried
@@ -627,16 +628,24 @@ fi
 
 # A bare count proves nothing: aria-current on the wrong nav item still
 # passes a total. It must sit on the same <a> as class="is-current".
+# Report the number this loop actually walked rather than a literal. The
+# literal said 16 while 17 pages were on disk, and nothing caught it,
+# because it lived in the ok text and not in the condition. Zero pages
+# walked is a broken glob, so it fails instead of reporting a clean sweep.
 miswired=''
+interior=0
 for f in ./*.html; do
     [ "$f" = "./index.html" ] && continue
+    interior=$((interior + 1))
     tr '\n' ' ' < "$f" \
       | grep -oE '<a [^>]*class="is-current"[^>]*>' \
       | grep -q 'aria-current="page"' \
       || miswired="$miswired $f"
 done
-if [ -z "$miswired" ]; then
-    ok 'All 16 interior pages mark their current nav item'
+if [ "$interior" -eq 0 ]; then
+    bad 'No interior pages walked; the aria-current audit examined nothing'
+elif [ -z "$miswired" ]; then
+    ok "All $interior interior pages mark their current nav item"
 else
     bad "aria-current missing from the is-current link:$miswired"
 fi
