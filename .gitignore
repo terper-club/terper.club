@@ -1,2 +1,9 @@
 .DS_STORE
 **/.DS_STORE
+
+# Planning artefacts, agent scratch and local instructions. Kept on disk,
+# never served: GitHub Pages publishes this repository root as-is.
+.claude/
+.superpowers/
+docs/
+CLAUDE.md

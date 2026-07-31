@@ -1,0 +1,582 @@
+/* ==========================================================================
+   terper.club: the whole site's styles.
+   Palette: Verdigris. Dark only, no light-mode variant by design.
+   ========================================================================== */
+
+@font-face {
+    font-family: 'Oxanium';
+    src: url(../fonts/oxanium-var.woff2) format('woff2');
+    font-weight: 200 800;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Jost';
+    src: url(../fonts/jost-var.woff2) format('woff2');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+:root {
+    --shell:  #0A0C0C;
+    --ink:    #C3CBC8;
+    --dim:    #8B948F;
+    --accent: #5FBFAE;
+    --hair:   rgba(95, 191, 174, 0.30);
+
+    --face-display: 'Oxanium', system-ui, sans-serif;
+    --face-prose:   'Jost', system-ui, sans-serif;
+
+    --gutter: 20px;
+}
+
+/* --- reset ------------------------------------------------------------- */
+
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    background: var(--shell);
+}
+
+body {
+    background: var(--shell);
+    color: var(--ink);
+    font-family: var(--face-prose);
+    font-weight: 300;
+    letter-spacing: 0.01em;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+img,
+video,
+iframe {
+    max-width: 100%;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+::selection {
+    background: var(--accent);
+    color: var(--shell);
+}
+
+:focus-visible {
+    outline: 1px solid var(--accent);
+    outline-offset: 3px;
+}
+
+/* --- the wordmark ------------------------------------------------------
+   Drawn as a mask filled with currentColor so it inherits link colour and
+   reacts to hover exactly like the nav text does. The inner text is sized
+   to zero: invisible on screen, still read by screen readers.            */
+
+.logo {
+    display: block;
+    width: 104px;
+    height: 21px;
+    font-size: 0;
+    background: currentColor;
+    -webkit-mask: url(../media/logo-alpha.png) center / contain no-repeat;
+            mask: url(../media/logo-alpha.png) center / contain no-repeat;
+}
+
+.logo-link {
+    color: var(--ink);
+    display: inline-block;
+    transition: color 0.18s ease;
+}
+
+.logo-link:hover {
+    color: var(--accent);
+}
+
+/* --- shared layout ------------------------------------------------------ */
+
+.wrapper {
+    width: 90%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding-bottom: 80px;
+}
+
+/* --- interior header ---------------------------------------------------- */
+
+.site-head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 26px;
+    padding: 44px 0 22px;
+    border-bottom: 1px solid var(--hair);
+    margin-bottom: 56px;
+}
+
+.nav-h {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+}
+
+.nav-h a,
+.nav-v a {
+    font-family: var(--face-display);
+    font-weight: 300;
+    font-size: 12px;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--ink);
+    transition: color 0.18s ease;
+}
+
+.nav-h a:hover,
+.nav-v a:hover {
+    color: var(--accent);
+}
+
+.nav-h a.is-current,
+.nav-v a.is-current {
+    color: var(--accent);
+}
+
+/* --- homepage splash ----------------------------------------------------
+   100dvh rather than 100vh so mobile browser chrome cannot crop the nav.  */
+
+body.splash {
+    height: 100dvh;
+    overflow: hidden;
+}
+
+.splash-media {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(.66) contrast(1.04) sepia(.12) hue-rotate(130deg) saturate(.7);
+}
+
+/* The photograph is pale across the top and dark along the bottom, so the
+   scrim only has to do work in the corner where the nav actually sits.    */
+.splash-scrim {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(
+        23deg,
+        rgba(7, 10, 10, 0.88) 0%,
+        rgba(7, 10, 10, 0.42) 46%,
+        rgba(7, 10, 10, 0.20) 100%
+    );
+}
+
+.splash-nav {
+    position: fixed;
+    left: 7%;
+    bottom: 7%;
+    z-index: 2;
+}
+
+.splash-nav .logo {
+    width: 169px;
+    height: 34px;
+    margin-bottom: 34px;
+    color: var(--ink);
+}
+
+.nav-v {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.nav-v a {
+    font-size: 13px;
+    letter-spacing: 0.30em;
+}
+
+/* --- category pages ----------------------------------------------------- */
+
+.page-head {
+    margin-bottom: 40px;
+}
+
+.page-title {
+    font-family: var(--face-display);
+    font-weight: 200;
+    font-size: 34px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink);
+}
+
+.poster {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-bottom: 56px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--gutter);
+}
+
+.tile img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    object-position: top;
+    transition: opacity 0.22s ease;
+}
+
+.tile:hover img {
+    opacity: 0.72;
+}
+
+.tile-cap {
+    display: block;
+    margin-top: 10px;
+    font-family: var(--face-display);
+    font-weight: 300;
+    font-size: 10px;
+    letter-spacing: 0.20em;
+    text-transform: uppercase;
+    line-height: 1.7;
+}
+
+.cap-name {
+    display: block;
+    color: var(--ink);
+    transition: color 0.22s ease;
+}
+
+.cap-venue {
+    display: block;
+    color: var(--dim);
+}
+
+.tile:hover .cap-name {
+    color: var(--accent);
+}
+
+/* --- detail pages ------------------------------------------------------- */
+
+.project-header {
+    margin-bottom: 52px;
+}
+
+.project-title {
+    font-family: var(--face-display);
+    font-weight: 200;
+    font-size: 42px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1.15;
+    color: var(--ink);
+    margin-bottom: 10px;
+}
+
+.project-subtitle {
+    font-family: var(--face-display);
+    font-weight: 300;
+    font-size: 11px;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-bottom: 30px;
+}
+
+.project-description {
+    max-width: 62ch;
+}
+
+.project-description p + p,
+.prose p + p {
+    margin-top: 20px;
+}
+
+.media-section {
+    margin-bottom: var(--gutter);
+}
+
+.media-grid {
+    display: grid;
+    gap: var(--gutter);
+}
+
+.media-grid.single {
+    grid-template-columns: 1fr;
+}
+
+.media-grid.double {
+    grid-template-columns: 1fr 1fr;
+}
+
+.media-item img,
+.media-item video {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.media-item img + img,
+.media-item video + img,
+.media-item img + video {
+    margin-top: var(--gutter);
+}
+
+.media-item iframe {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    height: auto;
+    display: block;
+    border: 0;
+}
+
+.media-caption {
+    margin-top: 8px;
+    font-family: var(--face-display);
+    font-weight: 300;
+    font-size: 10px;
+    letter-spacing: 0.20em;
+    text-transform: uppercase;
+    color: var(--dim);
+}
+
+.media-caption:empty {
+    display: none;
+}
+
+.project-details {
+    margin: 56px 0;
+    padding-top: 30px;
+    border-top: 1px solid var(--hair);
+}
+
+/* auto-fit rather than a fixed four, so mycelium-parlour-1's fifth entry
+   (the photo credit) lays out in five columns while every other page still
+   lays out in four, and the whole thing reflows without breakpoint help. */
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 30px;
+}
+
+.detail-item h4 {
+    font-family: var(--face-display);
+    font-weight: 300;
+    font-size: 10px;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+}
+
+.detail-item p {
+    font-size: 14px;
+    color: var(--dim);
+}
+
+.project-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    padding-top: 30px;
+    border-top: 1px solid var(--hair);
+}
+
+.project-nav > div:last-child {
+    text-align: right;
+}
+
+.nav-label {
+    font-family: var(--face-display);
+    font-weight: 300;
+    font-size: 9px;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-bottom: 6px;
+}
+
+.project-nav a {
+    font-family: var(--face-display);
+    font-weight: 300;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink);
+    transition: color 0.18s ease;
+}
+
+.project-nav a:hover {
+    color: var(--accent);
+}
+
+/* --- bio and contact ---------------------------------------------------- */
+
+.prose {
+    max-width: 62ch;
+    color: var(--ink);
+}
+
+.prose a {
+    color: var(--accent);
+    border-bottom: 1px solid var(--hair);
+}
+
+.prose a:hover {
+    border-bottom-color: var(--accent);
+}
+
+.prose i {
+    color: var(--dim);
+    font-style: italic;
+}
+
+.prose strong {
+    font-family: var(--face-display);
+    font-weight: 300;
+    font-size: 11px;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--dim);
+}
+
+.bio-grid {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 56px;
+    align-items: start;
+}
+
+.bio-image img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.contact-block {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    font-family: var(--face-display);
+    font-weight: 300;
+    font-size: 14px;
+    letter-spacing: 0.20em;
+    text-transform: uppercase;
+}
+
+.contact-block a {
+    color: var(--accent);
+}
+
+.contact-block span {
+    color: var(--dim);
+}
+
+/* --- footer -------------------------------------------------------------- */
+
+.site-foot {
+    margin-top: 90px;
+    padding-top: 26px;
+    border-top: 1px solid var(--hair);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    font-family: var(--face-display);
+    font-weight: 300;
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--dim);
+}
+
+.foot-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 26px;
+}
+
+.foot-links a {
+    color: var(--dim);
+    transition: color 0.18s ease;
+}
+
+.foot-links a:hover {
+    color: var(--accent);
+}
+
+/* --- responsive ---------------------------------------------------------- */
+
+@media (max-width: 1000px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .bio-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+}
+
+@media (max-width: 700px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+
+    .media-grid.double {
+        grid-template-columns: 1fr;
+    }
+
+    .nav-h {
+        gap: 18px;
+    }
+
+    .nav-h a {
+        font-size: 10px;
+        letter-spacing: 0.20em;
+    }
+
+    .project-title {
+        font-size: 30px;
+    }
+
+    .page-title {
+        font-size: 26px;
+    }
+
+    .project-nav {
+        flex-direction: column;
+    }
+
+    .project-nav > div:last-child {
+        text-align: left;
+    }
+
+    .splash-nav .logo {
+        width: 130px;
+        height: 26px;
+        margin-bottom: 26px;
+    }
+
+    .nav-v a {
+        font-size: 12px;
+    }
+}
